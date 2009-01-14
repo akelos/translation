@@ -11,7 +11,7 @@ include(dirname(__FILE__).str_repeat(DS.'..', 4).DS.'config'.DS.'config.php');
  
 class Makelos
 {
-//    var $repository = 'http://svn.akelos.org/plugins/geo_kit';
+    var $repository = 'http://svn.uranus.bermilabs.com/plugins/translation';
  
     function help()
     {
@@ -20,7 +20,6 @@ class Makelos
  
     function test($options = array())
     {
-        system('/usr/bin/env php '.dirname(__FILE__).'/test/translation_tests.php');
     }
  
     function install()
