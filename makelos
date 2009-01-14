@@ -1,0 +1,60 @@
+#!/usr/bin/env php
+<?php
+ 
+array_shift($argv);
+defined('DS') ? null : define('DS', DIRECTORY_SEPARATOR);
+ 
+$task = empty($argv) ? false : array_shift($argv);
+$task = !in_array($task,get_class_methods('Makelos')) ? 'help' : $task;
+ 
+include(dirname(__FILE__).str_repeat(DS.'..', 4).DS.'config'.DS.'config.php');
+ 
+class Makelos
+{
+//    var $repository = 'http://svn.akelos.org/plugins/geo_kit';
+ 
+    function help()
+    {
+        echo "\nValid commands are ".join(', ', get_class_methods('Makelos'))."\n";
+    }
+ 
+    function test($options = array())
+    {
+        system('/usr/bin/env php '.dirname(__FILE__).'/test/translation_tests.php');
+    }
+ 
+    function install()
+    {
+        $Installer =& $this->_getInstaller();
+        $Installer->install();
+    }
+ 
+    function uninstall()
+    {
+        $Installer =& $this->_getInstaller();
+        $Installer->uninstall();
+    }
+ 
+    function &_getInstaller()
+    {
+        $plugin_dir = AK_BASE_DIR.DS.'app'.DS.'vendor'.DS.'plugins'.DS.'translation';
+        $installer_file = $plugin_dir.DS.'installer'.DS.'translation_installer.php';
+        require_once($installer_file);
+        $Installer =& new TranslationInstaller();
+        return $Installer;
+    }
+ 
+    function _includeDependencies()
+    {
+        require_once(AK_LIB_DIR.DS.'Ak.php');
+        require_once(AK_LIB_DIR.DS.'AkObject.php');
+        require_once(AK_LIB_DIR.DS.'AkInflector.php');
+        require_once(AK_LIB_DIR.DS.'AkPlugin.php');
+        require_once(AK_LIB_DIR.DS.'AkPlugin/AkPluginManager.php');
+        require_once(AK_LIB_DIR.DS.'AkInstaller.php');
+        require_once(AK_LIB_DIR.DS.'utils'.DS.'generators'.DS.'AkelosGenerator.php');
+    }
+}
+ 
+$Makelos = new Makelos();
+$Makelos->$task(@$argv);
